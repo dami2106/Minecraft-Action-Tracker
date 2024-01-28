@@ -23,6 +23,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Block;
 
+import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
+import com.dami.actiontracker.command.ReturnHomeCommand;
 
 public class ActionTracker implements ModInitializer {
 	// This logger is used to write text to the console and the log file.
@@ -47,6 +49,7 @@ public class ActionTracker implements ModInitializer {
 		// This code runs as soon as Minecraft is in a mod-load-ready state.
 		// However, some things (like resources) may still be uninitialized.
 		// Proceed with mild caution.
+		CommandRegistrationCallback.EVENT.register(ReturnHomeCommand::register);
 
 		System.out.println("Logger Init");
 		ServerTickEvents.START_SERVER_TICK.register(this::onServerTick);
