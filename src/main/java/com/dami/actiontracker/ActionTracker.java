@@ -24,8 +24,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Block;
 
+import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import com.dami.actiontracker.command.ReturnHomeCommand;
+import java.util.concurrent.CompletableFuture;
 
 public class ActionTracker implements ModInitializer {
     // This logger is used to write text to the console and the log file.
@@ -42,12 +44,12 @@ public class ActionTracker implements ModInitializer {
 
     public Vec3d oldPlayerPos = new Vec3d(-999, -999, -999);
     public Vec3d oldBlockPos = new Vec3d(-999, -999, -999);
-
     @Override
     public void onInitialize() {
         // This code runs as soon as Minecraft is in a mod-load-ready state.
         // However, some things (like resources) may still be uninitialized.
         // Proceed with mild caution.
+        CommandRegistrationCallback.EVENT.register(ReturnHomeCommand::register);
 
         System.out.println("Logger Init");
         ServerTickEvents.START_SERVER_TICK.register(this::onServerTick);
@@ -61,37 +63,37 @@ public class ActionTracker implements ModInitializer {
         });
 
 
-//        UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
-//            if (player instanceof ServerPlayerEntity) {
-//                BlockPos pos = hitResult.getBlockPos();
-//
-//                onBlockPlaced((ServerPlayerEntity) player, pos, world);
-//            }
-//            return ActionResult.PASS;
-//        });
+        UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
+            ActionResult result = ActionResult.PASS;
 
-	@Override
-	public void onInitialize() {
-		// This code runs as soon as Minecraft is in a mod-load-ready state.
-		// However, some things (like resources) may still be uninitialized.
-		// Proceed with mild caution.
-		CommandRegistrationCallback.EVENT.register(ReturnHomeCommand::register);
+            // Access player, world, hand, and hitResult after the ActionResult.PASS
+            if (result == ActionResult.PASS && player instanceof ServerPlayerEntity) {
+                BlockPos originalPos = hitResult.getBlockPos();
 
-		System.out.println("Logger Init");
-		ServerTickEvents.START_SERVER_TICK.register(this::onServerTick);
+                // Schedule a task to run on the next server tick
+                MinecraftServer server = world.getServer();
+                
+                if (server != null) {
+                    server.execute(() -> {
+                        // Get the updated block position after the block is placed
+                        BlockState blockState = world.getBlockState(originalPos);
+                        BlockPos updatedPos = originalPos;
+                        if (blockState.getBlock() != null) {
+                            updatedPos = originalPos.offset(hitResult.getSide());
+                        }
 
-		AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) -> {
-			if (player instanceof ServerPlayerEntity) {
-				onPlayerBreakBlock((ServerPlayerEntity) player, pos, world);
-				return ActionResult.success(true);  // Return true to indicate the block was successfully attacked
-			}
-			return ActionResult.success(false);  // Return false if the block was not successfully attacked
-		});
-        PlayerInteractBlockCallback.EVENT.register((player, world, hand, pos, direction) -> {
+                        // Now you can use updatedPos for further processing
+                        onBlockPlaced((ServerPlayerEntity) player, updatedPos, world);
+                    });
+                }
+            }
 
-
+            return result;
         });
+
+
     }
+
 
     private void onBlockPlaced(ServerPlayerEntity player, BlockPos pos, World world) {
         // Get the coordinates of the placed block
