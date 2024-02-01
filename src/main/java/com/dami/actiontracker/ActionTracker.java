@@ -2,32 +2,28 @@ package com.dami.actiontracker;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.fabricmc.loader.impl.lib.sat4j.core.Vec;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ActionResult;
+import org.apache.commons.logging.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.Vec3d;
 
-import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import net.minecraft.world.World;
-import net.minecraft.world.BlockView;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Block;
 
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
-import com.dami.actiontracker.command.ReturnHomeCommand;
-import java.util.concurrent.CompletableFuture;
+import com.dami.actiontracker.command.StartLoggingCommand;
+import com.dami.actiontracker.command.StopLoggingCommand;
+
+import com.dami.actiontracker.logging.LoggingManager;
 
 public class ActionTracker implements ModInitializer {
     // This logger is used to write text to the console and the log file.
@@ -49,9 +45,11 @@ public class ActionTracker implements ModInitializer {
         // This code runs as soon as Minecraft is in a mod-load-ready state.
         // However, some things (like resources) may still be uninitialized.
         // Proceed with mild caution.
-        CommandRegistrationCallback.EVENT.register(ReturnHomeCommand::register);
-
         System.out.println("Logger Init");
+
+        CommandRegistrationCallback.EVENT.register(StartLoggingCommand::register);
+        CommandRegistrationCallback.EVENT.register(StopLoggingCommand::register);
+
         ServerTickEvents.START_SERVER_TICK.register(this::onServerTick);
 
         AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) -> {
@@ -67,7 +65,7 @@ public class ActionTracker implements ModInitializer {
             ActionResult result = ActionResult.PASS;
 
             // Access player, world, hand, and hitResult after the ActionResult.PASS
-            if (result == ActionResult.PASS && player instanceof ServerPlayerEntity) {
+            if (player instanceof ServerPlayerEntity) {
                 BlockPos originalPos = hitResult.getBlockPos();
 
                 // Schedule a task to run on the next server tick
@@ -105,7 +103,11 @@ public class ActionTracker implements ModInitializer {
         Vec3d playerPos = getPlayerVec(player);
         String blockName = getBlockName(world, x, y, z);
 
-        System.out.println("place," + blockName + "," + blockPos.toString() + ",player," + playerPos.toString());
+        if (LoggingManager.LOGGING && !blockName.equals("air")){
+            System.out.println("place," + blockName + "," + blockPos.toString() + ",player," + playerPos.toString());
+            LoggingManager.writeLine("place," + blockName + "," + blockPos.toString() + ",player," + playerPos.toString());
+        }
+            
     }
 
     public String getBlockName(World world, int x, int y, int z) {
@@ -128,8 +130,9 @@ public class ActionTracker implements ModInitializer {
         Vec3d playerPos = getPlayerVec(player);
 
         String blockName = getBlockName(world, x, y, z);
-        if (!blockName.equals("air")) {
+        if (!blockName.equals("air") && LoggingManager.LOGGING) {
             System.out.println("break," + blockName + "," + blockPos.toString() + ",player," + playerPos.toString());
+            LoggingManager.writeLine("break," + blockName + "," + blockPos.toString() + ",player," + playerPos.toString());
 //            world.breakBlock(pos, true, player);
         }
 
@@ -183,9 +186,13 @@ public class ActionTracker implements ModInitializer {
                         int z = (int) player.getZ();
 
                         Vec3d playerPos = new Vec3d(x, y, z);
+
+                        String playerInfo = "move,old," + oldPlayerPos.toString() + ",new," + playerPos.toString() +",";
+
                         String pd = getPlayerDirection(playerPos);
-                        if (!playerPos.equals(oldPlayerPos)) {
-                            System.out.println("MOVE: " + pd);
+                        if (LoggingManager.LOGGING && !pd.equals("")) {
+                            System.out.println(playerInfo + pd);
+                            LoggingManager.writeLine(playerInfo + pd);
                         }
                     }
                 });
