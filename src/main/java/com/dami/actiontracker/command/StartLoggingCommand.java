@@ -24,7 +24,7 @@ public class StartLoggingCommand {
             //TODO Set file name here
             //FILENAME = "";
 
-            context.getSource().sendFeedback(() -> Text.literal("Started logging to : " + LoggingManager.FILENAME + ".txt"), false);
+            context.getSource().sendFeedback(() -> Text.literal("Started logging to : " + LoggingManager.FILENAME), false);
             LoggingManager.createFile();
 
         } else {

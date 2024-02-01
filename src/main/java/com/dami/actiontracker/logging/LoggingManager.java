@@ -12,7 +12,7 @@ public class LoggingManager {
     public static void createFile() {
         try {
             // Create a FileWriter object with the given file path
-            FileWriter fileWriter = new FileWriter(FILENAME + ".txt");
+            FileWriter fileWriter = new FileWriter(FILENAME);
 
             // Create a BufferedWriter to write efficiently
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
