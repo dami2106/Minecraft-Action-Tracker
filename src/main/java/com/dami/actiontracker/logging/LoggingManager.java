@@ -9,10 +9,10 @@ public class LoggingManager {
     public static String FILENAME = "action_log";
 
 
-    public static void createFile() {
+    public static void createFile(String file_name) {
         try {
             // Create a FileWriter object with the given file path
-            FileWriter fileWriter = new FileWriter(FILENAME);
+            FileWriter fileWriter = new FileWriter(file_name);
 
             // Create a BufferedWriter to write efficiently
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
@@ -20,7 +20,9 @@ public class LoggingManager {
             // Close the BufferedWriter to flush and write changes to the file
             bufferedWriter.close();
 
-            System.out.println("File created successfully: " + FILENAME);
+            System.out.println("File created successfully: " + file_name);
+
+            FILENAME = file_name;
 
         } catch (IOException e) {
             e.printStackTrace();
