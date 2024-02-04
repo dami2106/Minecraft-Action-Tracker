@@ -3,9 +3,10 @@
 	"id": "actiontracker",
 	"version": "${version}",
 	"name": "ActionTracker",
-	"description": "A mod to discretize actions in Minecraft",
+	"description": "A mod to discretize actions in Minecraft. Logs discrete actions to a specified file that can be used for processing.",
 	"authors": [
-		"Damion"
+		"dami2106",
+		"Gavin2417"
 	],
 	"contact": {
 		"homepage": "https://fabricmc.net/",

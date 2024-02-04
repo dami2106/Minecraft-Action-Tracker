@@ -32,11 +32,6 @@ public class ActionTracker implements ModInitializer {
     public static final String MOD_ID = "ActionTracker";
     public static final Logger LOGGER = LoggerFactory.getLogger("actiontracker");
 
-    public static final Vec3d NORTH = new Vec3d(0, 0, -1.0);
-    public static final Vec3d EAST = new Vec3d(1.0, 0, 0);
-    public static final Vec3d SOUTH = new Vec3d(0, 0, 1.0);
-    public static final Vec3d WEST = new Vec3d(-1.0, 0, 0);
-
 
     public Vec3d oldPlayerPos = new Vec3d(-999, -999, -999);
     public Vec3d oldBlockPos = new Vec3d(-999, -999, -999);
@@ -146,31 +141,6 @@ public class ActionTracker implements ModInitializer {
         return new Vec3d(x, y, z);
     }
 
-    private Vec3d getDiffVector(Vec3d newVec, Vec3d oldVec) {
-        Vec3d resultant = newVec.subtract(oldVec);
-        resultant = resultant.normalize();
-        return resultant;
-    }
-
-    private String getPlayerDirection(Vec3d playerPos) {
-        String dir = "";
-
-        Vec3d resultant = getDiffVector(playerPos, oldPlayerPos);
-
-        if (resultant.equals(NORTH)) {
-            dir = "NORTH";
-        } else if (resultant.equals(EAST)) {
-            dir = "EAST";
-        } else if (resultant.equals(SOUTH)) {
-            dir = "SOUTH";
-        } else if (resultant.equals(WEST)) {
-            dir = "WEST";
-        }
-
-        oldPlayerPos = playerPos;
-
-        return dir;
-    }
 
     private void onServerTick(MinecraftServer server) {
         // Iterate over all loaded worlds
@@ -180,21 +150,17 @@ public class ActionTracker implements ModInitializer {
                 // Iterate over all players in the world
                 ((ServerWorld) world).getPlayers().forEach(player -> {
                     // Print player's position every 20 ticks (1 second)
-                    if (server.getTicks() % 5 == 0) {
-                        int x = (int) player.getX();
-                        int y = (int) player.getY();
-                        int z = (int) player.getZ();
 
-                        Vec3d playerPos = new Vec3d(x, y, z);
+                    Vec3d playerPos = getPlayerVec(player);
+                    if (playerPos.distanceTo(oldPlayerPos) > 0.5 && (playerPos.x != oldPlayerPos.x ) && (playerPos.z != oldBlockPos.z)) {
+//
+                        System.out.println("move,old," + oldPlayerPos.toString() + ",new," + playerPos.toString());
+                        LoggingManager.writeLine("move,old," + oldPlayerPos.toString() + ",new," + playerPos.toString());
+                        oldPlayerPos = playerPos;
 
-                        String playerInfo = "move,old," + oldPlayerPos.toString() + ",new," + playerPos.toString() +",";
 
-                        String pd = getPlayerDirection(playerPos);
-                        if (LoggingManager.LOGGING && !pd.equals("")) {
-                            System.out.println(playerInfo + pd);
-                            LoggingManager.writeLine(playerInfo + pd);
-                        }
                     }
+
                 });
             }
         });
