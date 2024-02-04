@@ -25,6 +25,8 @@ Note the mod was built for Minecraft version 1.20.4 and has not been tested on a
   
 Please see [here](https://fabricmc.net/wiki/player:tutorials:adding_mods) for installing mods made for Fabric. 
 
+Please also note that the Fabric API is also needed alongside the Action Tracker Mod. This can be downloaded from [here](https://www.curseforge.com/minecraft/mc-mods/fabric-api). 
+
 ## Logging Abilities 
 Currently, the logger is able to detect: 
  - A block broken by the player, along with the coordinates and block type 
