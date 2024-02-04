@@ -11,7 +11,7 @@ To start the logger, within Minecraft, run the following command:
 ```
 Note that the `<file_name.txt>` argument is optional, it allows you to specify a custom name for the log file. 
 The default name is **log_action.txt**. This output file can be found in your Minecraft 
-installation logs directory, or in your mod's log directory. 
+installation directory. 
 
 ### Stop Logging:
 To stop the logger, and save changes to the file, run the following from within Minecraft:
@@ -24,6 +24,8 @@ Download the latest .jar file from the GitHub. Once this .jar has been downloade
 Note the mod was built for Minecraft version 1.20.4 and has not been tested on any earlier or later versions.  
   
 Please see [here](https://fabricmc.net/wiki/player:tutorials:adding_mods) for installing mods made for Fabric. 
+
+Please also note that the Fabric API is also needed alongside the Action Tracker Mod. This can be downloaded from [here](https://www.curseforge.com/minecraft/mc-mods/fabric-api). 
 
 ## Logging Abilities 
 Currently, the logger is able to detect: 
