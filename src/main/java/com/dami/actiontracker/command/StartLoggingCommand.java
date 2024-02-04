@@ -35,7 +35,8 @@ public class StartLoggingCommand {
         if (!LoggingManager.LOGGING) {
             LoggingManager.LOGGING = true;
 
-            //TODO Set file name here
+            
+            // Change file name
             String file_name;
             if (log_text != null){
                 file_name = log_text + ".txt";
