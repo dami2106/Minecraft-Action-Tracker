@@ -11,7 +11,7 @@ To start the logger, within Minecraft, run the following command:
 ```
 Note that the `<file_name.txt>` argument is optional, it allows you to specify a custom name for the log file. 
 The default name is **log_action.txt**. This output file can be found in your Minecraft 
-installation logs directory, or in your mod's log directory. 
+installation directory. 
 
 ### Stop Logging:
 To stop the logger, and save changes to the file, run the following from within Minecraft:
