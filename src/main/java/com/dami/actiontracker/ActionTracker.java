@@ -25,6 +25,10 @@ import com.dami.actiontracker.command.StopLoggingCommand;
 
 import com.dami.actiontracker.logging.LoggingManager;
 
+import static java.lang.Math.abs;
+import static net.minecraft.util.math.MathHelper.floor;
+import static net.minecraft.util.math.MathHelper.parseInt;
+
 public class ActionTracker implements ModInitializer {
     // This logger is used to write text to the console and the log file.
     // It is considered best practice to use your mod id as the logger's name.
@@ -39,6 +43,13 @@ public class ActionTracker implements ModInitializer {
 
     public Vec3d oldPlayerPos = new Vec3d(-999, -999, -999);
     public Vec3d oldBlockPos = new Vec3d(-999, -999, -999);
+
+    public boolean upDown = false;
+
+    public Vec3d jumpInitPos = new Vec3d(-999, -999, -999);
+    public Vec3d jumpEndPos = new Vec3d(-999, -999, -999);
+
+    public String movement;
     @Override
     public void onInitialize() {
         // This code runs as soon as Minecraft is in a mod-load-ready state.
@@ -152,10 +163,11 @@ public class ActionTracker implements ModInitializer {
         return resultant;
     }
 
-    private String getPlayerDirection(Vec3d playerPos) {
+    private String getPlayerDirection(Vec3d playerPos, Vec3d oldPlayerPos) {
         String dir = "";
 
         Vec3d resultant = getDiffVector(playerPos, oldPlayerPos);
+//        resultant = new Vec3d(resultant.x, 0.0, resultant.z);
 
         if (resultant.equals(NORTH)) {
             dir = "NORTH";
@@ -167,7 +179,7 @@ public class ActionTracker implements ModInitializer {
             dir = "WEST";
         }
 
-        oldPlayerPos = playerPos;
+
 
         return dir;
     }
@@ -178,24 +190,78 @@ public class ActionTracker implements ModInitializer {
         server.getWorlds().forEach(world -> {
             if (world != null) {
                 // Iterate over all players in the world
-                ((ServerWorld) world).getPlayers().forEach(player -> {
-                    // Print player's position every 20 ticks (1 second)
-                    if (server.getTicks() % 5 == 0) {
+                for (ServerPlayerEntity player : world.getPlayers()) {// Print player's position every 20 ticks (1 second)
+                    if (server.getTicks() % 10 == 0) {
                         int x = (int) player.getX();
                         int y = (int) player.getY();
                         int z = (int) player.getZ();
-
+                        int oldX= (int) oldPlayerPos.x;
+                        int oldZ= (int) oldPlayerPos.z;
                         Vec3d playerPos = new Vec3d(x, y, z);
 
-                        String playerInfo = "move,old," + oldPlayerPos.toString() + ",new," + playerPos.toString() ;
 
-                        String pd = getPlayerDirection(playerPos);
-                        if (LoggingManager.LOGGING && !pd.equals("")) {
-                            System.out.println(playerInfo);
-                            LoggingManager.writeLine(playerInfo);
+// Assuming playerPos and oldPlayerPos are instances of some class or struct with a method getY()
+
+                        int get_newY = (int) playerPos.getY();
+                        int get_oldY = (int) oldPlayerPos.getY();
+//                        System.out.println(get_newY + " "+ get_oldY);
+
+
+                        String pd = getPlayerDirection(playerPos, oldPlayerPos);
+                        if (LoggingManager.LOGGING) {
+                            String playerInfo = "";
+                            // Changing y position and upDown -> False, meaning not in uping movement
+                            if (get_newY != get_oldY) {
+                                if (!upDown) {
+                                    upDown = true;
+                                    //set the jump initial position
+                                    jumpInitPos = oldPlayerPos;
+                                }
+                            } else if (pd.equals(""))  {
+                                // Log the jumping up or down thing if the player landed
+                                if (upDown) {
+                                    upDown = false;
+                                    // Get the player landed pos
+                                    jumpEndPos = oldPlayerPos;
+                                    Vec3d newPlayerPos = new Vec3d(jumpInitPos.x, oldPlayerPos.y, jumpInitPos.z);
+                                    pd = getPlayerDirection(oldPlayerPos, newPlayerPos);
+                                    if (jumpEndPos.y < jumpInitPos.y) {
+                                        playerInfo = "DOWN," + "old," + jumpInitPos.toString() + ",new," + jumpEndPos.toString() + " " + pd + " ";
+                                    } else {
+                                        playerInfo = "UP," + "old," + jumpInitPos.toString() + ",new," + jumpEndPos.toString() + " " + pd + " ";
+                                    }
+
+                                    System.out.println(playerInfo);
+                                }
+
+                            } else if (!pd.equals("") && ( abs(oldX - x) == 1 || abs(oldZ - z) == 1 )){
+                                playerInfo = "move,old," + oldPlayerPos.toString() + ",new," + playerPos.toString()+" "+pd  ;
+                                System.out.println(playerInfo);
+
+                            }
+                            //moving horizontal
                         }
+                        oldPlayerPos = playerPos;
                     }
-                });
+
+//                            if (!pd.equals("") && get_newY > get_oldY) {
+//                                playerInfo = "UPPPPPPPPPPPPP ,old," + oldPlayerPos.toString() + ",new," + playerPos.toString()+" "+ pd ;
+//                                System.out.println(playerInfo);
+//                                LoggingManager.writeLine(playerInfo);
+//                            }
+//                            else if (!pd.equals("") && get_newY < get_oldY) {
+//                                playerInfo = "DOWNNNNNNNNNNNNNN ,old," + oldPlayerPos.toString() + ",new," + playerPos.toString()+" "+ pd ;
+//                                System.out.println(playerInfo);
+//                                LoggingManager.writeLine(playerInfo);
+//                            }
+//                            else if (!pd.equals("") && get_newY == get_oldY) {
+//                                playerInfo = "move,old," + oldPlayerPos.toString() + ",new," + playerPos.toString() ;
+//                                System.out.println(playerInfo);
+//                                LoggingManager.writeLine(playerInfo);
+//                            }
+
+
+                }
             }
         });
     }
