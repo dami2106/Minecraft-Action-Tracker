@@ -2,6 +2,8 @@ package com.dami.actiontracker.event;
 
 import javax.swing.text.JTextComponent;
 import java.security.Key;
+import java.sql.SQLOutput;
+
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.option.KeyBinding;
@@ -12,24 +14,10 @@ import net.minecraft.util.math.BlockPos;
 public class KeyInputHandler {
     public static final String KEY_CATEGORY_TUTORIAL = "tutorial";
     public static final String KEY_MOVE_NORTH = "move_north";
-    public static final String KEY_MOVE_EAST = "move_east";
-    public static final String KEY_MOVE_SOUTH = "move_south";
-    public static final String KEY_MOVE_WEST = "move_west";
-    public static final String KEY_MOVE_UP = "move_up";
     public static final String KEY_JUMP_UP_NORTH = "jump_up_north";
-    public static final String KEY_JUMP_UP_EAST = "jump_up_east";
-    public static final String KEY_JUMP_UP_SOUTH = "jump_up_south";
-    public static final String KEY_JUMP_UP_WEST = "jump_up_west";
-
     public static KeyBinding move_north;
-    public static KeyBinding move_east;
-    public static KeyBinding move_south;
-    public static KeyBinding move_west;
-    public static KeyBinding move_up;
+
     public static KeyBinding jump_up_north;
-    public static KeyBinding jump_up_east;
-    public static KeyBinding jump_up_south;
-    public static KeyBinding jump_up_west;
 
 
 
@@ -43,54 +31,34 @@ public class KeyInputHandler {
                 if (minecraftClient.player != null) {
                     // Get the current position of the player
                     BlockPos currentPlayerPos = minecraftClient.player.getBlockPos();
-                    // Move the player one block north
-                    BlockPos newPlayerPos = currentPlayerPos.north();
+
+                    // Get the current yaw rotation of the player
+                    float playerYaw = minecraftClient.player.getYaw();
+
+                    playerYaw = playerYaw % 360;
+
+                    BlockPos newPlayerPos ;
+
+                    // Determine the direction the player is facing based on yaw angle
+                    if (playerYaw < 45 || playerYaw >= 315) {
+                        // Facing south
+                        System.out.println("South");
+                        newPlayerPos = currentPlayerPos.south();
+                    } else if (playerYaw < 135) {
+                        // Facing west
+                        System.out.println("West");
+                        newPlayerPos = currentPlayerPos.west();
+                    } else if (playerYaw < 225) {
+                        // Facing north
+                        System.out.println("North");
+                        newPlayerPos = currentPlayerPos.north();
+                    } else {
+                        // Facing east
+                        System.out.println("East");
+                        newPlayerPos = currentPlayerPos.east();
+                    }
                     // Set the player's position to the new position
-                    minecraftClient.player.updatePosition(newPlayerPos.getX(), newPlayerPos.getY(), newPlayerPos.getZ());
-                }
-            }else if(move_east.wasPressed()) {
-                // east
-                MinecraftClient minecraftClient = MinecraftClient.getInstance();
-                if (minecraftClient.player != null) {
-                    // Get the current position of the player
-                    BlockPos currentPlayerPos = minecraftClient.player.getBlockPos();
-                    // Move the player one block north
-                    BlockPos newPlayerPos = currentPlayerPos.east();
-                    // Set the player's position to the new position
-                    minecraftClient.player.updatePosition(newPlayerPos.getX(), newPlayerPos.getY(), newPlayerPos.getZ());
-                }
-            }else if(move_south.wasPressed()) {
-                // south
-                MinecraftClient minecraftClient = MinecraftClient.getInstance();
-                if (minecraftClient.player != null) {
-                    // Get the current position of the player
-                    BlockPos currentPlayerPos = minecraftClient.player.getBlockPos();
-                    // Move the player one block north
-                    BlockPos newPlayerPos = currentPlayerPos.south();
-                    // Set the player's position to the new position
-                    minecraftClient.player.updatePosition(newPlayerPos.getX(), newPlayerPos.getY(), newPlayerPos.getZ());
-                }
-            }else if(move_west.wasPressed()) {
-                // west
-                MinecraftClient minecraftClient = MinecraftClient.getInstance();
-                if (minecraftClient.player != null) {
-                    // Get the current position of the player
-                    BlockPos currentPlayerPos = minecraftClient.player.getBlockPos();
-                    // Move the player one block north
-                    BlockPos newPlayerPos = currentPlayerPos.west();
-                    // Set the player's position to the new position
-                    minecraftClient.player.updatePosition(newPlayerPos.getX(), newPlayerPos.getY(), newPlayerPos.getZ());
-                }
-            }else if(move_up.wasPressed()) {
-                // up
-                MinecraftClient minecraftClient = MinecraftClient.getInstance();
-                if (minecraftClient.player != null) {
-                    // Get the current position of the player
-                    BlockPos currentPlayerPos = minecraftClient.player.getBlockPos();
-                    // Move the player one block north
-                    BlockPos newPlayerPos = currentPlayerPos.up();
-                    // Set the player's position to the new position
-                    minecraftClient.player.updatePosition(newPlayerPos.getX(), newPlayerPos.getY(), newPlayerPos.getZ());
+                    minecraftClient.player.updatePosition(newPlayerPos.getX()+0.5, newPlayerPos.getY(), newPlayerPos.getZ()+0.5);
                 }
             }
             else if(jump_up_north.wasPressed()) {
@@ -99,49 +67,33 @@ public class KeyInputHandler {
                 if (minecraftClient.player != null) {
                     // Get the current position of the player
                     BlockPos currentPlayerPos = minecraftClient.player.getBlockPos();
-                    // Move the player one block north
-                    BlockPos newPlayerPos = currentPlayerPos.up().north();
-                    // Set the player's position to the new position
-                    minecraftClient.player.updatePosition(newPlayerPos.getX(), newPlayerPos.getY(), newPlayerPos.getZ());
-                }
-            }
-            else if(jump_up_east.wasPressed()) {
-                // up
-                MinecraftClient minecraftClient = MinecraftClient.getInstance();
-                if (minecraftClient.player != null) {
-                    // Get the current position of the player
-                    BlockPos currentPlayerPos = minecraftClient.player.getBlockPos();
-                    // Move the player one block north
-                    BlockPos newPlayerPos = currentPlayerPos.up().east();
-                    // Set the player's position to the new position
-                    minecraftClient.player.updatePosition(newPlayerPos.getX(), newPlayerPos.getY(), newPlayerPos.getZ());
-                }
-            }
-            else if(jump_up_south.wasPressed()) {
-                // up
-                MinecraftClient minecraftClient = MinecraftClient.getInstance();
-                if (minecraftClient.player != null) {
-                    // Get the current position of the player
-                    BlockPos currentPlayerPos = minecraftClient.player.getBlockPos();
-                    // Move the player one block north
-                    BlockPos newPlayerPos = currentPlayerPos.up().south();
+
+                    // Get the current yaw rotation of the player
+                    float playerYaw = minecraftClient.player.getYaw();
+
+                    playerYaw = playerYaw % 360;
+                    // Calculate the offset based on the direction the player is facin
+                    BlockPos newPlayerPos ;
+                    // Determine the direction the player is facing based on yaw angle
+                    if (playerYaw < 45 || playerYaw >= 315) {
+                        // Facing south
+                        newPlayerPos = currentPlayerPos.up().south();
+                    } else if (playerYaw < 135) {
+                        // Facing west
+                        newPlayerPos = currentPlayerPos.up().west();
+                    } else if (playerYaw < 225) {
+                        // Facing north
+                        newPlayerPos = currentPlayerPos.up().north();
+                    } else {
+                        // Facing east
+                        newPlayerPos = currentPlayerPos.up().east();
+                    }
 
                     // Set the player's position to the new position
-                    minecraftClient.player.updatePosition(newPlayerPos.getX(), newPlayerPos.getY(), newPlayerPos.getZ());
+                    minecraftClient.player.updatePosition(newPlayerPos.getX()+0.5, newPlayerPos.getY(), newPlayerPos.getZ()+0.5);
                 }
             }
-            else if(jump_up_west.wasPressed()) {
-                // up
-                MinecraftClient minecraftClient = MinecraftClient.getInstance();
-                if (minecraftClient.player != null) {
-                    // Get the current position of the player
-                    BlockPos currentPlayerPos = minecraftClient.player.getBlockPos();
-                    // Move the player one block north
-                    BlockPos newPlayerPos = currentPlayerPos.up().west();
-                    // Set the player's position to the new position
-                    minecraftClient.player.updatePosition(newPlayerPos.getX(), newPlayerPos.getY(), newPlayerPos.getZ());
-                }
-            }
+
         });
     }
 
@@ -157,57 +109,14 @@ public class KeyInputHandler {
                 GLFW.GLFW_KEY_I,
                 KEY_CATEGORY_TUTORIAL
         ));
-        move_east = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                KEY_MOVE_EAST,
-                InputUtil.Type.KEYSYM,
-                GLFW.GLFW_KEY_L,
-                KEY_CATEGORY_TUTORIAL
-        ));
-        move_south = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                KEY_MOVE_SOUTH,
-                InputUtil.Type.KEYSYM,
-                GLFW.GLFW_KEY_K,
-                KEY_CATEGORY_TUTORIAL
-        ));
-        move_west = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                KEY_MOVE_WEST,
-                InputUtil.Type.KEYSYM,
-                GLFW.GLFW_KEY_J,
-                KEY_CATEGORY_TUTORIAL
-        ));
-        move_up = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                KEY_MOVE_UP,
-                InputUtil.Type.KEYSYM,
-                GLFW.GLFW_KEY_P,
-                KEY_CATEGORY_TUTORIAL
-        ));
+
         jump_up_north = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 KEY_JUMP_UP_NORTH,
                 InputUtil.Type.KEYSYM,
-                GLFW.GLFW_KEY_8,
+                GLFW.GLFW_KEY_O,
                 KEY_CATEGORY_TUTORIAL
         ));
 
-        jump_up_east = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                KEY_JUMP_UP_EAST,
-                InputUtil.Type.KEYSYM,
-                GLFW.GLFW_KEY_6, // Change the key here, e.g., GLFW.GLFW_KEY_Q for example
-                KEY_CATEGORY_TUTORIAL`
-        ));
-
-        jump_up_south = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                KEY_JUMP_UP_SOUTH,
-                InputUtil.Type.KEYSYM,
-                GLFW.GLFW_KEY_2, // Change the key here
-                KEY_CATEGORY_TUTORIAL
-        ));
-
-        jump_up_west = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                KEY_JUMP_UP_WEST,
-                InputUtil.Type.KEYSYM,
-                GLFW.GLFW_KEY_4, // Change the key here
-                KEY_CATEGORY_TUTORIAL
-        ));
 
         registerKeyInputs();
     }
