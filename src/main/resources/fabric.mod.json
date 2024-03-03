@@ -21,6 +21,9 @@
 		],
 		"fabric-datagen": [
 			"com.dami.actiontracker.ActionTrackerDataGenerator"
+		],
+		"client": [
+			"com.dami.actiontracker.ActionTrackerClient"
 		]
 	},
 	"mixins": [
