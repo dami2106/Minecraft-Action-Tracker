@@ -191,7 +191,7 @@ public class ActionTracker implements ModInitializer {
             if (world != null) {
                 // Iterate over all players in the world
                 for (ServerPlayerEntity player : world.getPlayers()) {// Print player's position every 20 ticks (1 second)
-                    if (server.getTicks() % 10 == 0) {
+                    if (true) {
                         int x = (int) player.getX();
                         int y = (int) player.getY();
                         int z = (int) player.getZ();
@@ -244,21 +244,6 @@ public class ActionTracker implements ModInitializer {
                         oldPlayerPos = playerPos;
                     }
 
-//                            if (!pd.equals("") && get_newY > get_oldY) {
-//                                playerInfo = "UPPPPPPPPPPPPP ,old," + oldPlayerPos.toString() + ",new," + playerPos.toString()+" "+ pd ;
-//                                System.out.println(playerInfo);
-//                                LoggingManager.writeLine(playerInfo);
-//                            }
-//                            else if (!pd.equals("") && get_newY < get_oldY) {
-//                                playerInfo = "DOWNNNNNNNNNNNNNN ,old," + oldPlayerPos.toString() + ",new," + playerPos.toString()+" "+ pd ;
-//                                System.out.println(playerInfo);
-//                                LoggingManager.writeLine(playerInfo);
-//                            }
-//                            else if (!pd.equals("") && get_newY == get_oldY) {
-//                                playerInfo = "move,old," + oldPlayerPos.toString() + ",new," + playerPos.toString() ;
-//                                System.out.println(playerInfo);
-//                                LoggingManager.writeLine(playerInfo);
-//                            }
 
 
                 }

@@ -11,6 +11,8 @@ import net.minecraft.client.util.InputUtil;
 import org.lwjgl.glfw.GLFW;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.math.BlockPos;
+import java.lang.Math;
+
 public class KeyInputHandler {
     public static final String KEY_CATEGORY_TUTORIAL = "tutorial";
     public static final String KEY_MOVE_NORTH = "move_north";
@@ -35,7 +37,15 @@ public class KeyInputHandler {
                     // Get the current yaw rotation of the player
                     float playerYaw = minecraftClient.player.getYaw();
 
-                    playerYaw = playerYaw % 360;
+                    System.out.println("YAW before : " + playerYaw);
+                    playerYaw %= 360;
+//                    playerYaw = Math.abs(playerYaw);
+
+                    if (playerYaw < 0) {
+                        playerYaw += 360.0F;
+                    }
+
+                    System.out.println("YAW after : " + playerYaw);
 
                     BlockPos newPlayerPos ;
 
@@ -72,21 +82,25 @@ public class KeyInputHandler {
                     float playerYaw = minecraftClient.player.getYaw();
 
                     playerYaw = playerYaw % 360;
+
+                    if (playerYaw < 0) {
+                        playerYaw += 360.0F;
+                    }
                     // Calculate the offset based on the direction the player is facin
                     BlockPos newPlayerPos ;
                     // Determine the direction the player is facing based on yaw angle
                     if (playerYaw < 45 || playerYaw >= 315) {
                         // Facing south
-                        newPlayerPos = currentPlayerPos.up().south();
+                        newPlayerPos = currentPlayerPos.down().south();
                     } else if (playerYaw < 135) {
                         // Facing west
-                        newPlayerPos = currentPlayerPos.up().west();
+                        newPlayerPos = currentPlayerPos.down().west();
                     } else if (playerYaw < 225) {
                         // Facing north
-                        newPlayerPos = currentPlayerPos.up().north();
+                        newPlayerPos = currentPlayerPos.down().north();
                     } else {
                         // Facing east
-                        newPlayerPos = currentPlayerPos.up().east();
+                        newPlayerPos = currentPlayerPos.down().east();
                     }
 
                     // Set the player's position to the new position
