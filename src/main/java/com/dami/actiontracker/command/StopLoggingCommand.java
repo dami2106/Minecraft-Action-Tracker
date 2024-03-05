@@ -20,6 +20,7 @@ public class StopLoggingCommand {
 
         if (LoggingManager.LOGGING) {
             LoggingManager.LOGGING = false;
+            LoggingManager.writeLine("checkgoal");
             context.getSource().sendFeedback(() -> Text.literal("Stopped logging. Saving File."), false);
 
             //TODO Save file here

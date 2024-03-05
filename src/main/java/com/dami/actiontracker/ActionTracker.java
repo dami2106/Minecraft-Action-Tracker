@@ -115,8 +115,12 @@ public class ActionTracker implements ModInitializer {
 
         if (LoggingManager.LOGGING && !blockName.equals("air")){
             System.out.println("place," + blockName + "," + blockPos.toString() + ",player," + playerPos.toString());
-            LoggingManager.writeLine("place," + blockName + "," + blockPos.toString() + ",player," + playerPos.toString());
+//            LoggingManager.writeLine("place," + blockName + "," + blockPos.toString() + ",player," + playerPos.toString());
+            String dir = getPlayerDirection(blockPos, playerPos);
+            if (!dir.equals(""))
+                LoggingManager.writeLine("place," + dir + "," + blockName);
         }
+
             
     }
 
@@ -142,8 +146,12 @@ public class ActionTracker implements ModInitializer {
         String blockName = getBlockName(world, x, y, z);
         if (!blockName.equals("air") && LoggingManager.LOGGING) {
             System.out.println("break," + blockName + "," + blockPos.toString() + ",player," + playerPos.toString());
-            LoggingManager.writeLine("break," + blockName + "," + blockPos.toString() + ",player," + playerPos.toString());
+//            LoggingManager.writeLine("break," + blockName + "," + blockPos.toString() + ",player," + playerPos.toString());
 //            world.breakBlock(pos, true, player);
+            String dir = getPlayerDirection(blockPos, playerPos);
+            if (!dir.equals(""))
+                LoggingManager.writeLine("break," + dir + "," + blockName);
+
         }
 
     }
@@ -170,13 +178,13 @@ public class ActionTracker implements ModInitializer {
 //        resultant = new Vec3d(resultant.x, 0.0, resultant.z);
 
         if (resultant.equals(NORTH)) {
-            dir = "NORTH";
+            dir = "north";
         } else if (resultant.equals(EAST)) {
-            dir = "EAST";
+            dir = "east";
         } else if (resultant.equals(SOUTH)) {
-            dir = "SOUTH";
+            dir = "south";
         } else if (resultant.equals(WEST)) {
-            dir = "WEST";
+            dir = "west";
         }
 
 
@@ -227,16 +235,20 @@ public class ActionTracker implements ModInitializer {
                                     pd = getPlayerDirection(oldPlayerPos, newPlayerPos);
                                     if (jumpEndPos.y < jumpInitPos.y) {
                                         playerInfo = "DOWN," + "old," + jumpInitPos.toString() + ",new," + jumpEndPos.toString() + " " + pd + " ";
+                                        LoggingManager.writeLine("jumpdown," + pd);
                                     } else {
+                                        LoggingManager.writeLine("jumpup," + pd);
                                         playerInfo = "UP," + "old," + jumpInitPos.toString() + ",new," + jumpEndPos.toString() + " " + pd + " ";
                                     }
 
                                     System.out.println(playerInfo);
+
                                 }
 
                             } else if (!pd.equals("") && ( abs(oldX - x) == 1 || abs(oldZ - z) == 1 )){
                                 playerInfo = "move,old," + oldPlayerPos.toString() + ",new," + playerPos.toString()+" "+pd  ;
                                 System.out.println(playerInfo);
+                                LoggingManager.writeLine("move," + pd);
 
                             }
                             //moving horizontal
