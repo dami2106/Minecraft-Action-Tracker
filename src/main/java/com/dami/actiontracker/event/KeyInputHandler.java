@@ -37,6 +37,9 @@ public class KeyInputHandler {
                     // Get the current position of the player
                     BlockPos currentPlayerPos = minecraftClient.player.getBlockPos();
 
+                    System.out.println("PLAYER NOT VLOCK : " + minecraftClient.player.getY());
+
+                    System.out.println("current player : " + currentPlayerPos);
                     // Get the current yaw rotation of the player
                     float playerYaw = minecraftClient.player.getYaw();
                     playerYaw %= 360;
@@ -65,7 +68,7 @@ public class KeyInputHandler {
                         newPlayerPos = currentPlayerPos.east();
                     }
                     // Set the player's position to the new position
-                    minecraftClient.player.updatePosition(newPlayerPos.getX()+0.5, newPlayerPos.getY(), newPlayerPos.getZ()+0.5);
+                    minecraftClient.player.updatePosition(newPlayerPos.getX()+0.5, minecraftClient.player.getY(), newPlayerPos.getZ()+0.5);
                 }
             }
             else if(jump_up.wasPressed()) {
