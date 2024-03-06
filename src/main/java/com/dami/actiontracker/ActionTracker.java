@@ -158,9 +158,9 @@ public class ActionTracker implements ModInitializer {
 
 
     private Vec3d getPlayerVec(ServerPlayerEntity player) {
-        int x = (int) player.getX();
-        int y = (int) player.getY();
-        int z = (int) player.getZ();
+        double x = (double) player.getX();
+        double y = (double) player.getY();
+        double z = (double) player.getZ();
 
         return new Vec3d(x, y, z);
     }
@@ -200,18 +200,18 @@ public class ActionTracker implements ModInitializer {
                 // Iterate over all players in the world
                 for (ServerPlayerEntity player : world.getPlayers()) {// Print player's position every 20 ticks (1 second)
                     if (true) {
-                        int x = (int) player.getX();
-                        int y = (int) player.getY();
-                        int z = (int) player.getZ();
-                        int oldX= (int) oldPlayerPos.x;
-                        int oldZ= (int) oldPlayerPos.z;
+                        double x = (double) player.getX();
+                        double y = (double) player.getY();
+                        double z = (double) player.getZ();
+                        double oldX= (double) oldPlayerPos.x;
+                        double oldZ= (double) oldPlayerPos.z;
                         Vec3d playerPos = new Vec3d(x, y, z);
 
 
 // Assuming playerPos and oldPlayerPos are instances of some class or struct with a method getY()
 
-                        int get_newY = (int) playerPos.getY();
-                        int get_oldY = (int) oldPlayerPos.getY();
+                        double get_newY = (double) playerPos.getY();
+                        double get_oldY = (double) oldPlayerPos.getY();
 //                        System.out.println(get_newY + " "+ get_oldY);
 
 
