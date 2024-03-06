@@ -37,9 +37,9 @@ public class KeyInputHandler {
                     // Get the current position of the player
                     BlockPos currentPlayerPos = minecraftClient.player.getBlockPos();
 
-                    System.out.println("PLAYER NOT VLOCK : " + minecraftClient.player.getY());
-
-                    System.out.println("current player : " + currentPlayerPos);
+//                    System.out.println("PLAYER NOT VLOCK : " + minecraftClient.player.getY());
+//
+//                    System.out.println("current player : " + currentPlayerPos);
                     // Get the current yaw rotation of the player
                     float playerYaw = minecraftClient.player.getYaw();
                     playerYaw %= 360;
@@ -52,19 +52,19 @@ public class KeyInputHandler {
                     // Determine the direction the player is facing based on yaw angle
                     if (playerYaw < 45 || playerYaw >= 315) {
                         // Facing south
-                        System.out.println("South");
+//                        System.out.println("South");
                         newPlayerPos = currentPlayerPos.south();
                     } else if (playerYaw < 135) {
                         // Facing west
-                        System.out.println("West");
+//                        System.out.println("West");
                         newPlayerPos = currentPlayerPos.west();
                     } else if (playerYaw < 225) {
                         // Facing north
-                        System.out.println("North");
+//                        System.out.println("North");
                         newPlayerPos = currentPlayerPos.north();
                     } else {
                         // Facing east
-                        System.out.println("East");
+//                        System.out.println("East");
                         newPlayerPos = currentPlayerPos.east();
                     }
                     // Set the player's position to the new position

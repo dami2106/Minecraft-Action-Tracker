@@ -40,6 +40,15 @@ public class ActionTracker implements ModInitializer {
     public static final Vec3d EAST = new Vec3d(1.0, 0, 0);
     public static final Vec3d SOUTH = new Vec3d(0, 0, 1.0);
     public static final Vec3d WEST = new Vec3d(-1.0, 0, 0);
+    public static final Vec3d block_NORTH = new Vec3d(-0.5, 0, -1.5);
+    public static final Vec3d block_EAST = new Vec3d(0.5, 0, -0.5);
+    public static final Vec3d block_SOUTH = new Vec3d(-0.5, 0, 0.5);
+    public static final Vec3d block_WEST = new Vec3d(-1.5, 0, -0.5);
+//    place,cobblestone,(30.0, -60.0, 1.0),player,(30.5, -60.0, 2.5)north
+//    place,cobblestone,(31.0, -60.0, 2.0),player,(30.5, -60.0, 2.5)east
+//    place,cobblestone,(30.0, -60.0, 3.0),player,(30.5, -60.0, 2.5)south
+//    place,cobblestone,(29.0, -60.0, 2.0),player,(30.5, -60.0, 2.5)west
+
 
     public Vec3d oldPlayerPos = new Vec3d(-999, -999, -999);
     public Vec3d oldBlockPos = new Vec3d(-999, -999, -999);
@@ -175,15 +184,19 @@ public class ActionTracker implements ModInitializer {
         String dir = "";
 
         Vec3d resultant = getDiffVector(playerPos, oldPlayerPos);
-//        resultant = new Vec3d(resultant.x, 0.0, resultant.z);
+        double x =  playerPos.x - oldPlayerPos.x;
+        double y =  playerPos.y - oldPlayerPos.y;
+        double z =  playerPos.z - oldPlayerPos.z;
+        Vec3d NEW_resultant = new Vec3d(x,y,z);
 
-        if (resultant.equals(NORTH)) {
+
+        if (resultant.equals(NORTH)|| NEW_resultant.equals(block_NORTH)) {
             dir = "north";
-        } else if (resultant.equals(EAST)) {
+        } else if (resultant.equals(EAST)|| NEW_resultant.equals(block_EAST)) {
             dir = "east";
-        } else if (resultant.equals(SOUTH)) {
+        } else if (resultant.equals(SOUTH)|| NEW_resultant.equals(block_SOUTH)) {
             dir = "south";
-        } else if (resultant.equals(WEST)) {
+        } else if (resultant.equals(WEST)|| NEW_resultant.equals(block_WEST)) {
             dir = "west";
         }
 
